@@ -7,31 +7,37 @@
 
 #pragma once
 
+#include "Noncopyable.h"
 #include <pthread.h>
+#include <functional>
 
 namespace wd
 {
 
-class Thread
+class Thread 
+: Noncopyable
 {
 public:
-	Thread()
+	using ThreadCallback = std::function<void()>;
+
+	Thread(ThreadCallback && cb)
 	: _pthid(0)
 	, _isRunning(false)
+	, _cb(std::move(cb))
 	{}
 
-	virtual ~Thread();
+	~Thread();
 
 	void start();
 	void join();
 
 private:
-	virtual void run() = 0;
 	static void * threadFunc(void *);
 
 private:
 	pthread_t  _pthid;
 	bool _isRunning;
+	ThreadCallback _cb;
 };
 
 }//end of namespace wd

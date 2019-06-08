@@ -4,6 +4,7 @@
  /// @date    2019-06-08 10:19:45
  ///
  
+#include "Noncopyable.h"
 #include "Thread.h"
 
 #include <unistd.h>
@@ -17,6 +18,10 @@ using namespace std;
 class Mythread
 : public wd::Thread
 {
+public:
+	~Mythread() {	cout << "~Mythread()" << endl;}
+
+private:
 	void run() override
 	{
 		::srand(::clock());
@@ -30,12 +35,14 @@ class Mythread
 		}
 	}
 
-	~Mythread() {	cout << "~Mythread()" << endl;}
 };
              
  
 int main(void)
 {
+	//Mythread thread1;
+	//Mythread thread2(thread1);
+
 	cout << ">> main thread " << pthread_self() << endl;
 
 	unique_ptr<wd::Thread> mythread(new Mythread());
