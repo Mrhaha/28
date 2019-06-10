@@ -19,6 +19,7 @@ public:
 	typedef function<void()> DisplayCallback;
 	typedef function<double()> AreaCallback;
 
+	//注册回调函数
 	void setDisplayCallback(DisplayCallback cb)
 	{	_cb1 = cb;	}
 
@@ -42,9 +43,14 @@ public:
 
 private:
 	DisplayCallback _cb1; //回调函数
-	AreaCallback _cb2;
+	AreaCallback _cb2;//函数对象
 };
 
+//没有运用继承和虚函数
+//就是一个单独的类, 不依赖于任何其他类型
+//有新的图形要使用时，直接定义新的类
+//
+//称为基于对象
 class Rectangle
 {
 public:
@@ -112,14 +118,19 @@ void display(Figure & fig)
 }
 
 //std::function + std::bind进行结合之后，可以实现多态
+//
+//基于对象的实现
 
 int main(void)
 {
 	Rectangle rectangle(3, 4);
 	Triangle triangle(3, 4, 5);
-	Circle circle(10);
+	Circle circle(10);//具体类  
 
-	Figure figure;
+	Figure figure;//具体类
+	//Figure 与Rectangle/Triangle/Circle 都没有固定的关系, 解耦
+	//他们之间的关系是依赖，通过函数参数来表达
+
 	figure.setDisplayCallback(std::bind(&Rectangle::display, &rectangle));
 	figure.setAreaCallback(std::bind(&Rectangle::area, &rectangle));
 	display(figure);
