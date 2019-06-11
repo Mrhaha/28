@@ -50,7 +50,7 @@ ElemType TaskQueue::pop()
 		_notFull.notify();
 		return ret;
 	} else {
-		return nullptr;
+		return ElemType();
 	}
 }
 	

@@ -10,14 +10,14 @@
 #include "Condition.h"
 
 #include <queue>
+#include <functional>
 using namespace std;
 
 
 namespace wd
 {
 
-class Task;
-using ElemType = Task *;
+using ElemType = function<void()>; 
 
 class TaskQueue
 {
