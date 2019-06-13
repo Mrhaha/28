@@ -16,7 +16,6 @@
 
 int main(void)
 {
-	//句柄 handler ==> 门把手
 	int listenfd = socket(AF_INET, SOCK_STREAM, 0);//默认情况下是阻塞的
 	if(-1 == listenfd)
 	{
@@ -74,12 +73,10 @@ int main(void)
 	int peerFd = accept(listenfd, NULL, NULL);//由 accept与 客户端的connect完成三次握手
 	
 		char buff[1024] = "welcome to server.";//用户态的应用缓冲区
-		//send
 		ret = write(peerFd, buff, strlen(buff));//将应用缓冲区的数据直接copy到内核(发送缓冲区)
 	
 		memset(buff, 0, 1024);
 		printf("> pls client data:\n");
-		//recv
 		ret = read(peerFd, buff, 1024);//将内核接收缓冲区中的数据直接copy到应用缓冲区
 		printf("%s\n", buff);
 	}
