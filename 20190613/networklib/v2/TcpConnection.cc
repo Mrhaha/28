@@ -13,7 +13,9 @@
 #include <sys/socket.h>
 
 #include <sstream>
+#include <iostream>
 
+using namespace std;
 namespace wd
 {
 TcpConnection::TcpConnection(int fd)
@@ -30,6 +32,7 @@ TcpConnection::~TcpConnection()
 	if(!_isShutdwonWrite) {
 		shutdown();
 	}
+	cout << "~TcpConnection()" << endl;
 }
 
 string TcpConnection::receive()

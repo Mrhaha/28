@@ -14,6 +14,7 @@ using std::cout;
 using std::endl;
 using std::string;
 
+#if 0
 class Task
 {
 public:
@@ -39,6 +40,7 @@ private:
 	string _msg;
 	wd::TcpConnectionPtr _conn;
 };
+#endif
  
 //回调函数体现了扩展性
 void onConnection(const wd::TcpConnectionPtr & conn)
@@ -57,11 +59,11 @@ void onMessage(const wd::TcpConnectionPtr & conn)
 	//compute
 	//encode
 	//::sleep(2);//碰到需要长时间的处理时，响应速度会降下来
-	//conn->send(msg);
-	Task task(msg, conn);
+	conn->send(msg);
+	//Task task(msg, conn);
 
-	Threadpool * pthreadpool;
-	pthreadpool->addTask(std::bind(&Task::process, task));
+	//Threadpool * pthreadpool;
+	//pthreadpool->addTask(std::bind(&Task::process, task));
 }
 
 void onClose(const wd::TcpConnectionPtr & conn)

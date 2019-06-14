@@ -24,7 +24,6 @@ void onConnection(const wd::TcpConnectionPtr & conn)
 
 void onMessage(const wd::TcpConnectionPtr & conn)
 {	//该回调函数的执行时间不宜过长 10ms
-	cout << "onMessage...." << endl;
 	string msg = conn->receive();
 	cout << ">> receive msg from client: " << msg << endl;
 	//业务逻辑的处理交给
@@ -36,8 +35,7 @@ void onMessage(const wd::TcpConnectionPtr & conn)
 
 void onClose(const wd::TcpConnectionPtr & conn)
 {
-	cout << "onClose...." << endl;
-	cout << conn->toString() << " has closed!" << endl;
+	cout << ">> " << conn->toString() << " has closed!" << endl;
 }
 
 
