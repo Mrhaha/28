@@ -4,6 +4,7 @@
  /// @date    2019-05-07 15:42:14
  ///
  
+#include "Threadpool.h"
 #include "TcpServer.h"
 
 #include <unistd.h>
@@ -14,12 +15,13 @@ using std::cout;
 using std::endl;
 using std::string;
 
-#if 1
+wd::Threadpool * gThreadpool = nullptr;
+
 class Task
 {
 public:
 	Task(const string & msg,
-		 wd::TcpConnectionPtr & conn)
+		 const wd::TcpConnectionPtr & conn)
 	: _msg(msg)
 	, _conn(conn)
 	{}
@@ -40,7 +42,6 @@ private:
 	string _msg;
 	wd::TcpConnectionPtr _conn;
 };
-#endif
  
 //回调函数体现了扩展性
 void onConnection(const wd::TcpConnectionPtr & conn)
@@ -62,9 +63,7 @@ void onMessage(const wd::TcpConnectionPtr & conn)
 	//conn->send(msg);
 	Task task(msg, conn);
 
-	//拿到线程池之后，就将该任务交给线程池去执行
-	Threadpool * pthreadpool;
-	pthreadpool->addTask(std::bind(&Task::process, task));
+	gThreadpool->addTask(std::bind(&Task::process, task));
 }
 
 void onClose(const wd::TcpConnectionPtr & conn)
@@ -73,9 +72,28 @@ void onClose(const wd::TcpConnectionPtr & conn)
 	cout << conn->toString() << " has closed!" << endl;
 }
 
+using namespace wd;
+class EchoServer
+{
+public:
+	void onConnection(const TcpConnectionPtr & conn);
+	void onMessage(const TcpConnectionPtr & conn);
+	void onClose(const TcpConnectionPtr & conn);
+
+	void process();//业务逻辑的处理
+
+private:
+	Threadpool _threadpool;
+	TcpServer _server;
+};
 
 int main(void)
 {
+	wd::Threadpool threadpool(4, 10); 
+	threadpool.start();
+	
+	gThreadpool = &threadpool;
+
 	wd::TcpServer server("192.168.30.128", 8888);
 
 	server.setConnectionCallback(onConnection);
