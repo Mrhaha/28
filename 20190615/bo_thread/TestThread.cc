@@ -25,7 +25,8 @@ public:
 		int cnt = 10;
 		while(cnt--) {
 			int number = ::rand() % 100;
-			cout << "sub thread " << pthread_self() 
+			//cout << "sub thread " << pthread_self() 
+			cout << wd::threadName  
 				 << ": get a number = " << number << endl;
 
 			::sleep(1);
@@ -33,11 +34,12 @@ public:
 	}
 };
              
+//json格式
  
 int main(void)
 {
 
-	cout << ">> main thread " << pthread_self() << endl;
+	cout << wd::threadName << endl; 
 
 	MyTask task;
 
@@ -46,9 +48,12 @@ int main(void)
 	//
 	//绑定对象时，也可以以值传递方式传递对象
 	unique_ptr<wd::Thread> mythread(
-		new wd::Thread(std::bind(&MyTask::process, task)));
+		new wd::Thread(
+			//std::bind(&MyTask::process, task), "thread 1"));
+			std::bind(&MyTask::process, task)));
 	mythread->start();
 	mythread->join();
+	cout << ">>> " << wd::threadName << endl; 
 
 	return 0;
 }
